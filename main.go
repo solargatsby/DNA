@@ -80,6 +80,7 @@ func main() {
 	noder = net.StartProtocol(acct.PublicKey)
 	httpjsonrpc.RegistRpcNode(noder)
 	time.Sleep(20 * time.Second)
+	go httprestful.StartServer(noder)
 	noder.SyncNodeHeight()
 	noder.WaitForFourPeersStart()
 	if protocol.SERVICENODENAME != config.Parameters.NodeType {
@@ -93,7 +94,6 @@ func main() {
 	log.Info("--Start the RPC interface")
 	go httpjsonrpc.StartRPCServer()
 	go httpjsonrpc.StartLocalServer()
-	go httprestful.StartServer(noder)
 	go httpwebsocket.StartServer(noder)
 
 	for {
