@@ -355,26 +355,26 @@ func (tx *Transaction) GetProgramHashes() ([]Uint160, error) {
 		}
 		hashs = append(hashs, astHash)
 	case DestroyUTXO:
-		inputs, err := tx.GetMergedAssetIDValueFromReference()
-		if err != nil {
-			return nil, NewDetailErr(err, ErrNoCode, "[Transaction], GetTransactionInputs failed.")
-		}
-		for k := range inputs {
-			tx, err := TxStore.GetTransaction(k)
-			if err != nil {
-				return nil, NewDetailErr(err, ErrNoCode, fmt.Sprintf("[Transaction], GetTransaction failed With AssetID:=%x", k))
-			}
-			if tx.TxType != RegisterAsset {
-				return nil, NewDetailErr(errors.New("[Transaction] error"), ErrNoCode, fmt.Sprintf("[Transaction], Transaction Type ileage With AssetID:=%x", k))
-			}
-
-			switch v1 := tx.Payload.(type) {
-			case *payload.RegisterAsset:
-				hashs = append(hashs, v1.Controller)
-			default:
-				return nil, NewDetailErr(errors.New("[Transaction] error"), ErrNoCode, fmt.Sprintf("[Transaction], payload is illegal", k))
-			}
-		}
+		//inputs, err := tx.GetMergedAssetIDValueFromReference()
+		//if err != nil {
+		//	return nil, NewDetailErr(err, ErrNoCode, "[Transaction], GetTransactionInputs failed.")
+		//}
+		//for k := range inputs {
+		//	tx, err := TxStore.GetTransaction(k)
+		//	if err != nil {
+		//		return nil, NewDetailErr(err, ErrNoCode, fmt.Sprintf("[Transaction], GetTransaction failed With AssetID:=%x", k))
+		//	}
+		//	if tx.TxType != RegisterAsset {
+		//		return nil, NewDetailErr(errors.New("[Transaction] error"), ErrNoCode, fmt.Sprintf("[Transaction], Transaction Type ileage With AssetID:=%x", k))
+		//	}
+		//
+		//	switch v1 := tx.Payload.(type) {
+		//	case *payload.RegisterAsset:
+		//		hashs = append(hashs, v1.Controller)
+		//	default:
+		//		return nil, NewDetailErr(errors.New("[Transaction] error"), ErrNoCode, fmt.Sprintf("[Transaction], payload is illegal", k))
+		//	}
+		//}
 	default:
 	}
 	//remove dupilicated hashes
