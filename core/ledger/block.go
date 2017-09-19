@@ -11,9 +11,9 @@ import (
 	"DNA/crypto"
 	. "DNA/errors"
 	"DNA/vm/avm"
+	"bytes"
 	"io"
 	"time"
-	"bytes"
 )
 
 const BlockVersion uint32 = 0
@@ -117,7 +117,7 @@ func (b *Block) GetMessage() []byte {
 	return sig.GetHashData(b)
 }
 
-func (b *Block) ToArray() ([]byte) {
+func (b *Block) ToArray() []byte {
 	bf := new(bytes.Buffer)
 	b.Serialize(bf)
 	return bf.Bytes()
@@ -176,8 +176,7 @@ func GenesisBlockInit(defaultBookKeeper []*crypto.PubKey) (*Block, error) {
 	}
 	//transaction
 	trans := &tx.Transaction{
-		TxType:         tx.BookKeeping,
-		PayloadVersion: payload.BookKeepingPayloadVersion,
+		TxType: tx.BookKeeping,
 		Payload: &payload.BookKeeping{
 			Nonce: GenesisNonce,
 		},
@@ -187,6 +186,7 @@ func GenesisBlockInit(defaultBookKeeper []*crypto.PubKey) (*Block, error) {
 		Outputs:       []*tx.TxOutput{},
 		Programs:      []*program.Program{},
 	}
+	trans.SetPayloadVersion(payload.BookKeepingPayloadVersion)
 	//block
 	genesisBlock := &Block{
 		Blockdata:    genesisBlockdata,
