@@ -28,7 +28,7 @@ type PubKey struct {
 }
 
 func init() {
-	AlgChoice = 0
+	SetAlg("")
 }
 
 func SetAlg(algChoice string) {

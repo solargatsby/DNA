@@ -4,6 +4,8 @@ import (
 	. "DNA/net/protocol"
 	"fmt"
 	"sync"
+	"strings"
+	"DNA/common/config"
 )
 
 // The neigbor node list
@@ -153,4 +155,18 @@ func (node *node) GetNbrNodeCnt() uint32 {
 		}
 	}
 	return count
+}
+
+func (node *node) IsUptoMinNodeCount() bool {
+	consensusType := strings.ToLower(config.Parameters.ConsensusType)
+	if consensusType == "" {
+		consensusType = "dbft"
+	}
+	minCount := config.DBFTMINNODENUM
+	switch consensusType {
+	case "dbft":
+	case "solo":
+		minCount = config.SOLOMINNODENUM
+	}
+	return int(node.GetNbrNodeCnt())+1 >= minCount
 }

@@ -5,7 +5,6 @@ import (
 	"DNA/core/asset"
 	. "DNA/core/transaction"
 	"DNA/core/transaction/payload"
-	"bytes"
 )
 
 type PayloadInfo interface{}
@@ -14,25 +13,6 @@ type PayloadInfo interface{}
 type BookKeepingInfo struct {
 	Nonce  uint64
 	Issuer IssuerInfo
-}
-
-//implement PayloadInfo define DeployCodeInfo
-type FunctionCodeInfo struct {
-	Code           string
-	ParameterTypes []int
-	ReturnType    int
-	CodeHash       string
-}
-
-type DeployCodeInfo struct {
-	Code        *FunctionCodeInfo
-	Name        string
-	Version string
-	Author      string
-	Email       string
-	Description string
-	Language    int
-	ProgramHash string
 }
 
 //implement PayloadInfo define IssueAssetInfo
@@ -74,13 +54,6 @@ type DataFileInfo struct {
 	Issuer   IssuerInfo
 }
 
-type PrivacyPayloadInfo struct {
-	PayloadType uint8
-	Payload     string
-	EncryptType uint8
-	EncryptAttr string
-}
-
 func TransPayloadToHex(p Payload) PayloadInfo {
 	switch object := p.(type) {
 	case *payload.BookKeeping:
@@ -104,26 +77,6 @@ func TransPayloadToHex(p Payload) PayloadInfo {
 		return obj
 	case *payload.IssueAsset:
 	case *payload.TransferAsset:
-	case *payload.DeployCode:
-		obj := new(DeployCodeInfo)
-		obj.Code = new(FunctionCodeInfo)
-		obj.Code.Code = ToHexString(object.Code.Code)
-		var params []int
-		for _, v := range object.Code.ParameterTypes {
-			params = append(params, int(v))
-		}
-		obj.Code.ParameterTypes = params
-		obj.Code.ReturnType = int(object.Code.ReturnType)
-		codeHash := object.Code.CodeHash()
-		obj.Code.CodeHash = ToHexString(codeHash.ToArrayReverse())
-		obj.Name = object.Name
-		obj.Version = object.CodeVersion
-		obj.Author = object.Author
-		obj.Email = object.Email
-		obj.Description = object.Description
-		obj.Language = int(object.Language)
-		obj.ProgramHash = ToHexString(object.ProgramHash.ToArrayReverse())
-		return obj
 	case *payload.RegisterAsset:
 		obj := new(RegisterAssetInfo)
 		obj.Asset = object.Asset
@@ -136,15 +89,6 @@ func TransPayloadToHex(p Payload) PayloadInfo {
 		obj := new(RecordInfo)
 		obj.RecordType = object.RecordType
 		obj.RecordData = ToHexString(object.RecordData)
-		return obj
-	case *payload.PrivacyPayload:
-		obj := new(PrivacyPayloadInfo)
-		obj.PayloadType = uint8(object.PayloadType)
-		obj.Payload = ToHexString(object.Payload)
-		obj.EncryptType = uint8(object.EncryptType)
-		bytesBuffer := bytes.NewBuffer([]byte{})
-		object.EncryptAttr.Serialize(bytesBuffer)
-		obj.EncryptAttr = ToHexString(bytesBuffer.Bytes())
 		return obj
 	case *payload.DataFile:
 		obj := new(DataFileInfo)

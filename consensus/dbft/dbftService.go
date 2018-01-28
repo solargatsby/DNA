@@ -5,7 +5,6 @@ import (
 	. "DNA/common"
 	"DNA/common/config"
 	"DNA/common/log"
-	con "DNA/consensus"
 	ct "DNA/core/contract"
 	"DNA/core/contract/program"
 	"DNA/core/ledger"
@@ -453,7 +452,6 @@ func (ds *DbftService) PrepareResponseReceived(payload *msg.ConsensusPayload, me
 
 func (ds *DbftService) RefreshPolicy() {
 	log.Debug()
-	con.DefaultPolicy.Refresh()
 }
 
 func (ds *DbftService) RequestChangeView() {

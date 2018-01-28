@@ -40,20 +40,13 @@ const (
 	NETMAGIC          = 0x74746e41
 	MAXBLKHDRCNT      = 500
 	MAXINVHDRCNT      = 500
-	DIVHASHLEN        = 5
-	MINCONNCNT        = 3
 	MAXREQBLKONCE     = 16
 	TIMESOFUPDATETIME = 2
 )
 
 const (
-	HELLOTIMEOUT     = 3 // Seconds
-	MAXHELLORETYR    = 3
 	MAXBUFLEN        = 1024 * 16 // Fixme The maximum buffer to receive message
-	MAXCHANBUF       = 512
 	PROTOCOLVERSION  = 0
-	PERIODUPDATETIME = 3 // Time to update and sync information with other nodes
-	HEARTBEAT        = 2
 	KEEPALIVETIMEOUT = 3
 	DIALTIMEOUT      = 6
 	CONNMONITOR      = 6
@@ -131,7 +124,7 @@ type Noder interface {
 	RemoveFlightHeight(height uint32)
 	GetLastRXTime() time.Time
 	SetHeight(height uint64)
-	WaitForFourPeersStart()
+	WaitForPeersStart()
 	WaitForSyncBlkFinish()
 	GetFlightHeights() []uint32
 	IsAddrInNbrList(addr string) bool

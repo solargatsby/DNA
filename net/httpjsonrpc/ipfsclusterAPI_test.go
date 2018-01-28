@@ -1,7 +1,7 @@
 package httpjsonrpc
 
 import (
-	"DNA/common/log"
+	//"DNA/common/log"
 	"fmt"
 	"os"
 	"os/exec"
@@ -9,8 +9,8 @@ import (
 )
 
 func TestAddFileIPFS(t *testing.T) {
-	var path string = "./Log/"
-	log.CreatePrintLog(path)
+	//var path string = "./Log/"
+	//log.CreatePrintLog(path)
 	cmd := exec.Command("/bin/sh", "-c", "dd if=/dev/zero of=test bs=1024 count=1000")
 	cmd.Run()
 	ref, err := AddFileIPFS("test", true)
@@ -21,8 +21,8 @@ func TestAddFileIPFS(t *testing.T) {
 	fmt.Printf("ipfs path=%s\n", ref)
 }
 func TestGetFileIPFS(t *testing.T) {
-	var path string = "./Log/"
-	log.CreatePrintLog(path)
+	//var path string = "./Log/"
+	//log.CreatePrintLog(path)
 	ref := "QmVHzLjYvp4bposJDD2PNeJ9PAFixyQu3oFj6gqipgsukX"
 	err := GetFileIPFS(ref, "testOut")
 	if err != nil {

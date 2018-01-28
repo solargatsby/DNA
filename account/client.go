@@ -3,18 +3,13 @@ package account
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"math/rand"
 	"os"
-	"sort"
-	"strings"
 	"sync"
 	"time"
-
 	. "DNA/common"
-	"DNA/common/config"
 	"DNA/common/log"
 	"DNA/common/password"
 	"DNA/core/contract"
@@ -23,11 +18,9 @@ import (
 	sig "DNA/core/signature"
 	"DNA/crypto"
 	. "DNA/errors"
-	"DNA/net/protocol"
 )
 
 const (
-	DefaultBookKeeperCount = 4
 	WalletFileName         = "wallet.dat"
 )
 
@@ -171,7 +164,7 @@ func (cl *ClientImpl) loadClient(passwordKey []byte) error {
 }
 
 func (cl *ClientImpl) GetDefaultAccount() (*Account, error) {
-	for programHash, _ := range cl.accounts {
+	for programHash := range cl.accounts {
 		return cl.GetAccountByProgramHash(programHash), nil
 	}
 
@@ -507,23 +500,6 @@ func (cl *ClientImpl) AddContract(ct *contract.Contract) error {
 	return err
 }
 
-func clientIsDefaultBookKeeper(publicKey string) bool {
-	for _, bookKeeper := range config.Parameters.BookKeepers {
-		if strings.Compare(bookKeeper, publicKey) == 0 {
-			return true
-		}
-	}
-	return false
-}
-
-func nodeType(typeName string) int {
-	if "service" == config.Parameters.NodeType {
-		return protocol.SERVICENODE
-	} else {
-		return protocol.VERIFYNODE
-	}
-}
-
 func GetClient() Client {
 	if !FileExisted(WalletFileName) {
 		log.Fatal(fmt.Sprintf("No %s detected, please create a wallet by using command line.", WalletFileName))
@@ -539,22 +515,4 @@ func GetClient() Client {
 		return nil
 	}
 	return c
-}
-
-func GetBookKeepers() []*crypto.PubKey {
-	var pubKeys = []*crypto.PubKey{}
-	sort.Strings(config.Parameters.BookKeepers)
-	for _, key := range config.Parameters.BookKeepers {
-		pubKey := []byte(key)
-		pubKey, err := hex.DecodeString(key)
-		// TODO Convert the key string to byte
-		k, err := crypto.DecodePoint(pubKey)
-		if err != nil {
-			log.Error("Incorrectly book keepers key")
-			return nil
-		}
-		pubKeys = append(pubKeys, k)
-	}
-
-	return pubKeys
 }

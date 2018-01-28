@@ -3,13 +3,13 @@ package httpjsonrpc
 import (
 	. "DNA/common"
 	"DNA/common/log"
-	"DNA/consensus/dbft"
 	. "DNA/core/transaction"
 	tx "DNA/core/transaction"
 	. "DNA/errors"
 	. "DNA/net/protocol"
 	"encoding/json"
 	"fmt"
+	. "DNA/consensus"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -24,7 +24,7 @@ func init() {
 //an instance of the multiplexer
 var mainMux ServeMux
 var node Noder
-var dBFT *dbft.DbftService
+var consensusSrv ConsensusService
 
 //multiplexer that keeps track of every function to be called on specific rpc call
 type ServeMux struct {
@@ -141,10 +141,8 @@ func RegistRpcNode(n Noder) {
 	}
 }
 
-func RegistDbftService(d *dbft.DbftService) {
-	if dBFT == nil {
-		dBFT = d
-	}
+func RegistConsensusService(consensus ConsensusService) {
+	consensusSrv = consensus
 }
 
 //a function to register functions to be called for specific rpc calls

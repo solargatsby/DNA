@@ -3,15 +3,9 @@
     "Magic": 7630401,
     "Version": 23,
     "SeedList": [
-      "139.219.65.178:10338",
-      "139.219.99.201:10338",
-      "139.219.96.154:10338"
     ],
     "BookKeepers": [
-      "0322cfdb6a20401c2e44ede40b5282b2925fcff21cdc3814d782fd26026f1d023d",
-      "02b639c019537839ba30b7c8c0396095da8838993492c07fe6ca11a5cf7b8fd2ca",
-      "032c842494feba4e3dec3b9b7d9ad080ce63c81a41f7d79d2bbb5d499d16322907",
-      "03d36828a99547184452276116f1b5171861931ff439a6da2316fddf1f3f428850"
+      "03f785c007754041ceaad4c4c5cc6676609db38c752d4eb6ca2d74a75b0bdffd0a"
     ],
     "HttpInfoPort": 20333,
     "HttpInfoStart": true,
@@ -27,6 +21,7 @@
     "CertPath": "./sample-cert.pem",
     "KeyPath": "./sample-cert-key.pem",
     "CAPath": "./sample-ca.pem",
-    "MultiCoreNum": 4
+    "MultiCoreNum": 4,
+    "ConsensusType":"solo"
   }
 }
