@@ -18,6 +18,10 @@ func NewCommon()*cli.Command{
 				Name:"export,e",
 				Usage:"export all blocks in db",
 			},
+			cli.IntFlag{
+				Name:"to",
+				Usage:"the last block to export. Zero means current block height",
+			},
 		},
 		Action:nodeAction,
 		OnUsageError:onUsageError,
@@ -26,8 +30,9 @@ func NewCommon()*cli.Command{
 
 func nodeAction(ctx *cli.Context)error{
 	export := ctx.Bool("export")
+	to := ctx.Int("to")
 	if export{
-		err := ExportBlocks("")
+		err := ExportBlocks("", to)
 		if err != nil {
 			fmt.Fprintf(os.Stdout, "exportBlocks error %s\n", err)
 		}

@@ -157,7 +157,7 @@ func importBlocks(fileName string) error {
 	log.Infof("ImportBlocks TotalBlock:%d\n", height)
 
 	curBlockHeigh := ledger.DefaultLedger.Blockchain.GetBlockHeight()
-	for i := uint32(0); i < height; i++ {
+	for i := uint32(0); i <= height; i++ {
 		size, err := serialization.ReadUint32(file)
 		if err != nil {
 			return fmt.Errorf("serialization.ReadUint32 block height:%d block size error %s", i, err)

@@ -14,7 +14,7 @@ import (
 
 var exportFile = "blocks.dat"
 
-func ExportBlocks(path string) error {
+func ExportBlocks(path string, to int) error {
 	if path == "" {
 		path = exportFile
 	}
@@ -28,14 +28,19 @@ func ExportBlocks(path string) error {
 	if err != nil {
 		return fmt.Errorf("getCurrBlockHeight error %s", err)
 	}
+	height -= 1
+
+	if to >0 && to < int(height) {
+		height = uint32(to)
+	}
 
 	err = serialization.WriteUint32(file, height)
 	if err != nil {
-		return fmt.Errorf("serialization.WriteUint32 current block heigh %d error %s", height, err)
+		return fmt.Errorf("serialization.WriteUint32 block heigh %d error %s", height, err)
 	}
 	fmt.Fprintf(os.Stdout, "Start export blocks total:%d\n", height)
 
-	for i := uint32(0); i < height; i++ {
+	for i := uint32(0); i <= height; i++ {
 		buf := bytes.NewBuffer(nil)
 		block, err := getBlockByHeight(i)
 		if err != nil {
@@ -60,6 +65,8 @@ func ExportBlocks(path string) error {
 		printCompletePercent(height, i)
 		time.Sleep(time.Millisecond)
 	}
+
+	fmt.Fprintf(os.Stdout, "Export blocks complete\n")
 	return nil
 }
 
