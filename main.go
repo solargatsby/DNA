@@ -4,22 +4,24 @@ import (
 	"DNA/account"
 	"DNA/common/config"
 	"DNA/common/log"
+	"DNA/consensus"
 	"DNA/core/ledger"
 	"DNA/core/store/ChainStore"
 	"DNA/core/transaction"
 	"DNA/crypto"
 	"DNA/net"
 	"DNA/net/httpjsonrpc"
+	rpccom "DNA/net/httpjsonrpc/common"
 	"DNA/net/httpnodeinfo"
 	"DNA/net/protocol"
-	"os"
-	"runtime"
-	"time"
-	"sort"
 	"encoding/hex"
-	"DNA/consensus"
+	"fmt"
+	"os"
 	"os/signal"
+	"runtime"
+	"sort"
 	"syscall"
+	"time"
 )
 
 const (
@@ -83,7 +85,6 @@ func main() {
 	log.Info("4. Start the P2P networks")
 	// Don't need two return value.
 	noder = net.StartProtocol(acct.PublicKey)
-	httpjsonrpc.RegistRpcNode(noder)
 
 	noder.SyncNodeHeight()
 	noder.WaitForPeersStart()
@@ -91,14 +92,15 @@ func main() {
 	if protocol.SERVICENODENAME != config.Parameters.NodeType {
 		log.Info("5. Start Consensus Services")
 		consensusSrv := consensus.ConsensusMgr.NewConsensusService(client, noder)
-		httpjsonrpc.RegistConsensusService(consensusSrv)
 		go consensusSrv.Start()
 		time.Sleep(5 * time.Second)
 	}
 
 	log.Info("--Start the RPC interface")
-	go httpjsonrpc.StartRPCServer()
-	go httpjsonrpc.StartLocalServer()
+	rpccom.Node = noder
+	go httpjsonrpc.DefJsonRpcSvr.Start(fmt.Sprintf(":%d", config.Parameters.HttpJsonPort))
+	defer httpjsonrpc.DefJsonRpcSvr.Close()
+
 	if config.Parameters.HttpInfoStart {
 		go httpnodeinfo.StartServer(noder)
 	}
@@ -136,7 +138,6 @@ func main() {
 ERROR:
 	os.Exit(1)
 }
-
 
 func GetBookKeepers() []*crypto.PubKey {
 	var pubKeys = []*crypto.PubKey{}
